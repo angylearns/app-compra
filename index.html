@@ -31,8 +31,8 @@
       </div>
 
       <nav class="app-tabs">
-        <button id="tabTemplate" class="tab-btn active">Despensa</button>
-        <button id="tabCurrent" class="tab-btn">Lista actual</button>
+        <button id="tabTemplate" class="tab-btn active">Todo</button>
+        <button id="tabCurrent" class="tab-btn">Compra</button>
       </nav>
 
       <div class="controls-wrapper">
@@ -40,7 +40,7 @@
           <form id="addItemForm" class="add-item-form">
             <input type="text" id="newItemInput" placeholder="Añadir producto" required class="item-input"
               autocomplete="off">
-            <input type="text" id="tagInput" placeholder="C, D, M" required class="tag-input" maxlength="1"
+            <input type="text" id="tagInput" placeholder="C, D, M" class="tag-input" maxlength="1"
               autocomplete="off">
             <button type="submit" class="add-button">Añadir</button>
           </form>
@@ -57,6 +57,7 @@
             <button class="filter-tag-btn" data-tag="C">C</button>
             <button class="filter-tag-btn" data-tag="D">D</button>
             <button class="filter-tag-btn" data-tag="M">M</button>
+            <button class="filter-tag-btn" data-tag="G">G</button>
           </div>
 
           <div id="currentListActions" class="actions-panel-top hidden">
