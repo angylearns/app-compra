@@ -1,26 +1,48 @@
-# Aplicación de Lista de la Compra Interactiva
+# Aplicación de Lista de la Compra Colaborativa
 
-Aplicación web interactiva en formato SPA (Single Page Application) optimizada para dispositivos móviles. Permite gestionar la lista de la compra de forma ágil y local, facilitando su uso directamente en el supermercado.
+Aplicación web interactiva en formato SPA (Single Page Application) optimizada para dispositivos móviles, diseñada para la gestión sincronizada y en tiempo real de listas de la compra entre varios usuarios.
 
-## Características Principales
+## Características Destacadas
 
-* **Importación desde Markdown:** Permite cargar un archivo `.md` con la lista de productos, procesando tolerantemente líneas en texto plano, viñetas (`-` o `*`) o formatos de tareas (`- [ ]`).
-* **Entrada Manual Directa:** Posibilidad de añadir nuevos alimentos en tiempo real desde la interfaz superior.
-* **Diseño en Dos Columnas:** Organización visual adaptada a pantallas móviles que distribuye los elementos en una cuadrícula de dos columnas para optimizar el espacio.
-* **Interactividad Eficiente:** Al pulsar sobre un producto, este se marca como completado (tachado y atenuado) y se desplaza automáticamente al final de la lista.
-* **Buscador en Tiempo Real:** Filtrado instantáneo de productos mediante un campo de búsqueda indexado.
-* **Persistencia Local:** Sincronización automática con el almacenamiento local del navegador (`LocalStorage`) para evitar la pérdida de datos ante cierres accidentales o falta de cobertura.
+* **Sincronización en Tiempo Real:** Utiliza Firebase Firestore para que cualquier cambio se refleje instantáneamente en todos los dispositivos conectados mediante una contraseña de acceso global.
+* **Diseño UI/UX Optimizado:**
+    * **Vista en cuadrícula:** Listas organizadas en dos columnas para maximizar la legibilidad en pantallas pequeñas.
+    * **Sticky Header:** Encabezado fijo que mantiene a mano el buscador, los filtros y el botón de "Terminar Compra".
+    * **Controles Compactos:** Formulario de añadir productos optimizado (50% Nombre, 25% Tag, 25% Botón).
+* **Gestión Inteligente de Búsqueda:** Buscador en tiempo real con botón dedicado para limpieza rápida de filtros.
+* **Sistema de Tags Personalizado:**
+    * **C (Azul):** Identificación visual de productos de compra.
+    * **D (Rojo):** Identificación de productos de despensa/emergencia.
+    * **M (Amarillo):** Identificación de productos de mantenimiento.
+* **Edición Inline Avanzada:** Sustitución de `prompt` por inputs integrados en la misma fila para una modificación ágil y fluida de los productos.
+* **Gestión de Ciclo de Vida:** Funcionalidad completa para transferir productos de la "Despensa" a la "Lista Actual" y limpieza de productos completados.
 
 ## Tecnologías Utilizadas
 
-* HTML5 Semántico
-* CSS3 (Diseño Mobile-First, Grid/Flexbox)
-* JavaScript Nativo (Vanilla JS, ES6+)
+* **Frontend:** HTML5 Semántico, CSS3 (Grid/Flexbox para diseño responsivo) y JavaScript Nativo (Vanilla JS).
+* **Backend:** Firebase Firestore (Base de datos NoSQL en tiempo real).
+* **Autenticación:** Sistema de validación basado en llaves de acceso dinámicas en `localStorage`.
 
-## Instalación y Despliegue
+## Estructura de la Interfaz
 
-Al ser una aplicación puramente frontend y sin dependencias externas, no requiere ningún proceso de compilación:
+1. **Pantalla de Acceso:** Protegida mediante contraseña global.
+2. **Dashboard (App Container):**
+    * **Header Sticky:**
+        * Pestañas de navegación (Despensa / Lista Actual).
+        * Panel de entrada de datos (Inputs 50/25/25).
+        * Buscador con botón de borrado rápido.
+        * Panel de filtrado rápido por Tags (C, D, M) y botón "Terminar compra" (solo en Lista Actual).
+    * **Contenedor de Listas:** Renderizado dinámico de productos en cuadrícula de dos columnas.
 
-1. Clonar o descargar los archivos del repositorio.
-2. Abrir el archivo `index.html` en cualquier navegador web.
-3. Para despliegue público, es totalmente compatible con servicios de alojamiento estático como GitHub Pages.
+## Instalación y Configuración
+
+1. **Firebase:** Crea un proyecto en la [Firebase Console](https://console.firebase.google.com/) y habilita Firestore.
+2. **Configuración:** Actualiza el objeto `firebaseConfig` en el archivo `app.js` con tus credenciales.
+3. **Reglas de Seguridad:** Asegúrate de configurar las reglas de Firestore para permitir acceso a las colecciones dinámicas según el `accessKey`.
+4. **Despliegue:** Sube el proyecto a un servidor de archivos estáticos (GitHub Pages, Vercel, Netlify).
+
+## Uso
+* **Acceder:** Introduce la contraseña compartida por tu grupo para sincronizar la misma base de datos.
+* **Despensa:** Haz clic en cualquier producto para enviarlo a la lista actual.
+* **Edición:** Pulsa el icono `✎` para editar nombre o tag directamente en la fila.
+* **Finalizar:** Marca los productos como realizados en "Lista actual" y pulsa el botón "Terminar compra" para eliminarlos definitivamente.
