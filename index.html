@@ -1,34 +1,83 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Lista de la Compra</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 </head>
+
 <body>
-  <div class="app-container">
+  <div id="welcomeScreen" class="welcome-screen">
+    <div class="welcome-card">
+      <h1 class="welcome-title">Acceso Protegido</h1>
+      <p class="welcome-subtitle">Introduce la contraseña de acceso global</p>
+      <form id="welcomeForm" class="welcome-form">
+        <input type="password" id="welcomeInput" required class="welcome-input" autocomplete="off"
+          placeholder="Contraseña">
+        <button type="submit" class="welcome-button">Acceder</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="mainApp" class="app-container hidden">
     <header class="app-header">
-      <h1 class="app-title">Lista de la Compra</h1>
-      <div class="import-section">
-        <input type="file" id="fileInput" accept=".md" class="file-uploader">
+      <div class="header-top">
+        <h1 class="app-title">Mi Compra</h1>
+        <button id="changeListBtn" class="change-list-btn">Cerrar Sesión</button>
       </div>
-      <div class="add-item-section">
-        <form id="addItemForm" class="add-item-form">
-          <input type="text" id="newItemInput" placeholder="Anadir alimento..." required class="item-input">
-          <button type="submit" class="add-button">Anadir</button>
-        </form>
-      </div>
-      <div class="search-section">
-        <input type="text" id="searchInput" placeholder="Buscar producto..." class="search-bar">
+
+      <nav class="app-tabs">
+        <button id="tabTemplate" class="tab-btn active">Despensa</button>
+        <button id="tabCurrent" class="tab-btn">Lista actual</button>
+      </nav>
+
+      <div class="controls-wrapper">
+        <div id="templateControls" class="control-group">
+          <form id="addItemForm" class="add-item-form">
+            <input type="text" id="newItemInput" placeholder="Añadir producto" required class="item-input"
+              autocomplete="off">
+            <input type="text" id="tagInput" placeholder="C, D, M" required class="tag-input" maxlength="1"
+              autocomplete="off">
+            <button type="submit" class="add-button">Añadir</button>
+          </form>
+        </div>
+
+        <div class="search-section">
+          <input type="text" id="searchInput" placeholder="Buscar producto" class="search-bar" autocomplete="off">
+          <button id="clearSearchBtn" class="clear-search-btn">✕</button>
+        </div>
+
+        <div class="filter-action-container">
+          <div class="tag-filters">
+            <button class="filter-tag-btn active" data-tag="">Todos</button>
+            <button class="filter-tag-btn" data-tag="C">C</button>
+            <button class="filter-tag-btn" data-tag="D">D</button>
+            <button class="filter-tag-btn" data-tag="M">M</button>
+          </div>
+
+          <div id="currentListActions" class="actions-panel-top hidden">
+            <button id="finalizePurchaseBtn" class="finalize-btn">Terminar compra</button>
+          </div>
+        </div>
       </div>
     </header>
+
     <main class="list-container">
-      <p id="emptyState" class="empty-state">Anade productos manualmente o carga un archivo .md</p>
-      <ul id="shoppingList" class="product-list"></ul>
+      <p id="emptyState" class="empty-state">No hay productos cargados en esta categoría</p>
+
+      <ul id="templateList" class="product-list-grid"></ul>
+
+      <ul id="shoppingList" class="product-list-grid hidden"></ul>
     </main>
+
     <div id="notification" class="notification" role="alert"></div>
   </div>
+
   <script src="app.js"></script>
 </body>
+
 </html>
