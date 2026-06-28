@@ -78,14 +78,14 @@ async function insertTemplateItem(name, tag) {
   }
   try {
     await templateRef.add(getAuthData({ name: cName, tag: cTag }));
-    showNotification("Añadido");
+    showNotification(`${name} añadido`);
   } catch (e) { showNotification("Error de permiso"); }
 }
 
 async function copyToCurrentList(product) {
   try {
     await currentRef.add(getAuthData({ name: product.name, tag: product.tag, completed: false, createdAt: Date.now() }));
-    showNotification("Enviado a compra");
+    showNotification(`${product.name} enviado a Compra`);
   } catch (e) { showNotification("Error al transferir"); }
 }
 
@@ -124,7 +124,7 @@ function enableInlineEditing(li, product) {
 
     try {
       await templateRef.doc(product.id).update(getAuthData({ name: newName, tag: newTag }));
-      showNotification("Actualizado");
+      showNotification(`${newName} actualizado`);
     } catch (e) {
       showNotification("Error de actualización");
     }
