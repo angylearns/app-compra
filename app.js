@@ -73,26 +73,30 @@ async function insertTemplateItem(name, tag) {
   var cTag = tag.trim() === "" ? "G" : tag.trim().toUpperCase();
   
   if (!cName || ["C", "D", "M", "G"].indexOf(cTag) === -1) { 
-    showNotification("Tag inválido (C, D, M o dejar vacío)"); 
-    return; 
+    showNotification("Tag inválido ❌"); 
+    return false; // Retornamos falso para indicar fallo
   }
   try {
     await templateRef.add(getAuthData({ name: cName, tag: cTag }));
-    showNotification(`${name} añadido`);
-  } catch (e) { showNotification("Error de permiso"); }
+    showNotification(`${name} añadido ✅`);
+    return true; // Retornamos verdadero para indicar éxito
+  } catch (e) { 
+    showNotification("Error de permiso ❌"); 
+    return false;
+  }
 }
 
 async function copyToCurrentList(product) {
   try {
     await currentRef.add(getAuthData({ name: product.name, tag: product.tag, completed: false, createdAt: Date.now() }));
-    showNotification(`${product.name} enviado a Compra`);
-  } catch (e) { showNotification("Error al transferir"); }
+    showNotification(`${product.name} enviado a Compra ✅`);
+  } catch (e) { showNotification("Error al transferir ❌"); }
 }
 
 async function toggleCurrentItemStatus(id, currentStatus) {
   try {
     await currentRef.doc(id).update(getAuthData({ completed: !currentStatus }));
-  } catch (e) { showNotification("Error al actualizar"); }
+  } catch (e) { showNotification("Error al actualizar ❌"); }
 }
 
 async function finalizeCurrentPurchase() {
@@ -100,8 +104,8 @@ async function finalizeCurrentPurchase() {
   if (targets.length === 0) { showNotification("No hay productos tachados"); return; }
   try {
     await Promise.all(targets.map(id => currentRef.doc(id).delete()));
-    showNotification("Compra finalizada");
-  } catch (e) { showNotification("Error al borrar"); }
+    showNotification("Compra finalizada ✅");
+  } catch (e) { showNotification("Error al borrar ❌"); }
 }
 
 function enableInlineEditing(li, product) {
@@ -118,15 +122,15 @@ function enableInlineEditing(li, product) {
     const newTag = document.getElementById("editTag").value.trim().toUpperCase() || "G";
 
     if (!newName || ["C", "D", "M", "G"].indexOf(newTag) === -1) {
-      showNotification("Datos inválidos");
+      showNotification("Datos inválidos ❌");
       return;
     }
 
     try {
       await templateRef.doc(product.id).update(getAuthData({ name: newName, tag: newTag }));
-      showNotification(`${newName} actualizado`);
+      showNotification(`${newName} actualizado ✅`);
     } catch (e) {
-      showNotification("Error de actualización");
+      showNotification("Error de actualización ❌");
     }
   };
 }
@@ -150,7 +154,6 @@ function renderInterface() {
 
     tListEl.innerHTML = "";
     templateProducts.forEach(function (p) {
-      // Lógica de filtrado:
       if (selectedTagFilter !== "" && selectedTagFilter !== "G" && p.tag !== selectedTagFilter && p.tag !== "G") return;
       if (selectedTagFilter === "G" && p.tag !== "G") return;
       if (searchString && p.name.toLowerCase().indexOf(searchString.toLowerCase()) === -1) return;
@@ -177,7 +180,6 @@ function renderInterface() {
 
     sListEl.innerHTML = "";
     currentProducts.forEach(function (cp) {
-      // Lógica de filtrado:
       if (selectedTagFilter !== "" && selectedTagFilter !== "G" && cp.tag !== selectedTagFilter && cp.tag !== "G") return;
       if (selectedTagFilter === "G" && cp.tag !== "G") return;
       if (searchString && cp.name.toLowerCase().indexOf(searchString.toLowerCase()) === -1) return;
@@ -210,11 +212,19 @@ document.addEventListener("DOMContentLoaded", function () {
     window.location.reload();
   };
 
-  document.getElementById("addItemForm").onsubmit = (e) => {
+  document.getElementById("addItemForm").onsubmit = async (e) => {
     e.preventDefault();
-    insertTemplateItem(document.getElementById("newItemInput").value, document.getElementById("tagInput").value);
-    document.getElementById("newItemInput").value = "";
-    document.getElementById("tagInput").value = "";
+    const nameInput = document.getElementById("newItemInput");
+    const tagInput = document.getElementById("tagInput");
+    
+    // Llamamos a la inserción y comprobamos éxito
+    const success = await insertTemplateItem(nameInput.value, tagInput.value);
+    
+    // Solo vaciamos si la operación fue exitosa
+    if (success) {
+      nameInput.value = "";
+      tagInput.value = "";
+    }
   };
 
   document.getElementById("tabTemplate").onclick = () => {
