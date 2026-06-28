@@ -70,8 +70,12 @@ function killFirebaseListeners() {
 // ==========================================
 async function insertTemplateItem(name, tag) {
   var cName = name.trim();
-  var cTag = tag.trim().toUpperCase();
-  if (!cName || ["C", "D", "M"].indexOf(cTag) === -1) { showNotification("Tag inválido (C,D,M)"); return; }
+  var cTag = tag.trim() === "" ? "G" : tag.trim().toUpperCase();
+  
+  if (!cName || ["C", "D", "M", "G"].indexOf(cTag) === -1) { 
+    showNotification("Tag inválido (C, D, M o dejar vacío)"); 
+    return; 
+  }
   try {
     await templateRef.add(getAuthData({ name: cName, tag: cTag }));
     showNotification("Añadido");
@@ -100,9 +104,8 @@ async function finalizeCurrentPurchase() {
   } catch (e) { showNotification("Error al borrar"); }
 }
 
-// Nueva función de edición inline
 function enableInlineEditing(li, product) {
-  li.onclick = null; // Desactivar clic para copiar mientras editamos
+  li.onclick = null;
   li.innerHTML = `
     <input type="text" id="editName" value="${product.name}" style="flex:1; border:1px solid #ccc; padding:2px; border-radius:4px;">
     <input type="text" id="editTag" value="${product.tag}" maxlength="1" style="width:30px; text-transform:uppercase; border:1px solid #ccc; padding:2px; border-radius:4px; text-align:center;">
@@ -112,9 +115,9 @@ function enableInlineEditing(li, product) {
   document.getElementById("saveBtn").onclick = async (e) => {
     e.stopPropagation();
     const newName = document.getElementById("editName").value.trim();
-    const newTag = document.getElementById("editTag").value.trim().toUpperCase();
+    const newTag = document.getElementById("editTag").value.trim().toUpperCase() || "G";
 
-    if (!newName || ["C", "D", "M"].indexOf(newTag) === -1) {
+    if (!newName || ["C", "D", "M", "G"].indexOf(newTag) === -1) {
       showNotification("Datos inválidos");
       return;
     }
@@ -147,7 +150,9 @@ function renderInterface() {
 
     tListEl.innerHTML = "";
     templateProducts.forEach(function (p) {
-      if (selectedTagFilter && p.tag !== selectedTagFilter) return;
+      // Lógica de filtrado:
+      if (selectedTagFilter !== "" && selectedTagFilter !== "G" && p.tag !== selectedTagFilter && p.tag !== "G") return;
+      if (selectedTagFilter === "G" && p.tag !== "G") return;
       if (searchString && p.name.toLowerCase().indexOf(searchString.toLowerCase()) === -1) return;
 
       itemsRendered++;
@@ -172,7 +177,9 @@ function renderInterface() {
 
     sListEl.innerHTML = "";
     currentProducts.forEach(function (cp) {
-      if (selectedTagFilter && cp.tag !== selectedTagFilter) return;
+      // Lógica de filtrado:
+      if (selectedTagFilter !== "" && selectedTagFilter !== "G" && cp.tag !== selectedTagFilter && cp.tag !== "G") return;
+      if (selectedTagFilter === "G" && cp.tag !== "G") return;
       if (searchString && cp.name.toLowerCase().indexOf(searchString.toLowerCase()) === -1) return;
 
       itemsRendered++;
@@ -231,15 +238,15 @@ document.addEventListener("DOMContentLoaded", function () {
       selectedTagFilter = btn.getAttribute("data-tag");
       renderInterface();
     };
-
-    document.getElementById("clearSearchBtn").onclick = () => {
-      const searchInput = document.getElementById("searchInput");
-      searchInput.value = "";
-      searchString = "";
-      renderInterface();
-      searchInput.focus();
-    };
   });
+
+  document.getElementById("clearSearchBtn").onclick = () => {
+    const searchInput = document.getElementById("searchInput");
+    searchInput.value = "";
+    searchString = "";
+    renderInterface();
+    searchInput.focus();
+  };
 
   document.getElementById("searchInput").addEventListener("input", (e) => {
     searchString = e.target.value;
