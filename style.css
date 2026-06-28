@@ -386,8 +386,9 @@ body {
 .notification {
   position: fixed;
   bottom: 1.5rem;
-  left: 5%;
-  width: 90%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 2rem);
   max-width: 26rem;
   background: #1d1d1f;
   color: #ffffff;
@@ -396,13 +397,15 @@ body {
   font-size: 0.9rem;
   text-align: center;
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: opacity 0.3s, transform 0.3s;
   pointer-events: none;
   z-index: 100;
+  visibility: hidden;
 }
 
 .notification.visible {
   opacity: 1;
+  visibility: visible;
 }
 
 @media (max-width: 360px) {
