@@ -325,7 +325,7 @@ button {
 
 /* Estado Completado */
 .product-item.completed {
-  background-color: #f0f0f0 !important;
+  background-color: #f0f0f0;
 }
 
 .product-item.completed .product-name {
@@ -383,10 +383,9 @@ button {
   cursor: pointer;
 }
 
-/* Items Tag Colors */
-.product-item.tag-C { background-color: rgba(0, 122, 255, 0.1); }
-.product-item.tag-D { background-color: rgba(255, 59, 48, 0.1); }
-.product-item.tag-M { background-color: rgba(255, 204, 0, 0.1); }
+.product-item.tag-C { background-color: #abe4ff; }
+.product-item.tag-D { background-color: #fda9a9; }
+.product-item.tag-M { background-color: #fff7bb; }
 .product-item.tag-G { background-color: rgba(255, 255, 255, 1); }
 
 /* Edit / Finalize UI */
